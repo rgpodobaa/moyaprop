@@ -12,7 +12,7 @@ import Detalle from './pages/Detalle';
 import Nosotros from './pages/Nosotros';
 import Contacto from './pages/Contacto';
 import Login from './pages/Login';
-import FloatingWhatsApp from './components/FloatingWhatsApp'; // <--- 1. IMPORTAR
+import FloatingWhatsApp from './components/FloatingWhatsapp';
 
 // Guardia de Seguridad
 const RutaProtegida = ({ esAdmin, children }) => {
