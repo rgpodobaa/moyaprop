@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/* --- REGLAS DE IMPRESIÓN --- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+@media print {
+  /* Ocultar navegación, footer y botones al imprimir */
+  nav, footer, .navbar, .footer {
+    display: none !important;
+  }
+
+  /* Ajustar el cuerpo para que use todo el papel */
+  body {
+    background: white;
+    font-size: 12pt;
+  }
+}
