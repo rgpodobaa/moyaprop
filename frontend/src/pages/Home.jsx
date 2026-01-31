@@ -8,14 +8,17 @@ function Home() {
   const [busqueda, setBusqueda] = useState("");
   const [filtroOperacion, setFiltroOperacion] = useState("Todas");
 
-  useEffect(() => {
-    // 1. Cargar propiedades
-    fetch('http://localhost:5000/api/propiedades')
+useEffect(() => {
+    // 1. Definimos la dirección inteligente
+    const URL_API = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
+    // 2. Cargar propiedades (CAMBIO AQUÍ: Usamos la variable y comillas invertidas)
+    fetch(`${URL_API}/api/propiedades`)
       .then(res => res.json())
       .then(data => setPropiedades(data))
       .catch(err => console.error("Error:", err));
 
-    // 2. Cargar el Script de TikTok (Necesario para que aparezca el perfil)
+    // 3. Cargar el Script de TikTok (Esto queda IGUAL)
     const script = document.createElement('script');
     script.src = "https://www.tiktok.com/embed.js";
     script.async = true;

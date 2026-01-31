@@ -8,8 +8,12 @@ function Detalle() {
   // Estado para controlar qué foto estamos viendo (0 es la primera)
   const [indiceActual, setIndiceActual] = useState(0);
 
-  useEffect(() => {
-    fetch(`http://localhost:5000/api/propiedades`)
+useEffect(() => {
+    // 1. Definimos la dirección inteligente
+    const URL_API = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
+    // 2. Usamos la variable con comillas invertidas
+    fetch(`${URL_API}/api/propiedades`)
       .then(res => res.json())
       .then(data => {
         const encontrada = data.find(p => p._id === id);

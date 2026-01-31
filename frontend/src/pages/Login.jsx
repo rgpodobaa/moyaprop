@@ -9,8 +9,12 @@ function Login({ setEsAdmin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    try {
-      const res = await fetch('http://localhost:5000/api/login', {
+try {
+      // 1. Definimos la dirección inteligente
+      const URL_API = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
+      // 2. Usamos la variable con comillas invertidas
+      const res = await fetch(`${URL_API}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password })

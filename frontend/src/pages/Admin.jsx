@@ -17,8 +17,13 @@ const [formData, setFormData] = useState({
   const [listaImagenes, setListaImagenes] = useState([]); 
   const [subiendo, setSubiendo] = useState(false);
 
-  const cargarPropiedades = async () => {
-    const res = await fetch('http://localhost:5000/api/propiedades');
+const cargarPropiedades = async () => {
+    // 1. Definimos la dirección inteligente
+    const URL_API = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
+    // 2. Usamos esa dirección (OJO: usa comillas invertidas `` para que funcione el ${})
+    const res = await fetch(`${URL_API}/api/propiedades`);
+    
     const data = await res.json();
     setPropiedades(data);
   };
@@ -34,11 +39,16 @@ const [formData, setFormData] = useState({
     const data = new FormData();
     data.append('imagen', file);
 
-    try {
-      const res = await fetch('http://localhost:5000/api/upload', {
+try {
+      // 1. Definimos la dirección inteligente
+      const URL_API = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
+      // 2. Usamos esa dirección con comillas invertidas ``
+      const res = await fetch(`${URL_API}/api/upload`, {
         method: 'POST',
         body: data
       });
+      
       const respuesta = await res.json();
       
       // AQUÍ ESTÁ EL CAMBIO: Agregamos la nueva URL a la lista existente
@@ -52,9 +62,14 @@ const [formData, setFormData] = useState({
     }
   };
 
-  const eliminarPropiedad = async (id) => {
+const eliminarPropiedad = async (id) => {
     if (window.confirm("¿Borrar esta propiedad?")) {
-      await fetch(`http://localhost:5000/api/propiedades/${id}`, { method: 'DELETE' });
+      // 1. Definimos la dirección inteligente
+      const URL_API = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
+      // 2. Usamos esa dirección (manteniendo el /${id} al final)
+      await fetch(`${URL_API}/api/propiedades/${id}`, { method: 'DELETE' });
+      
       cargarPropiedades();
     }
   };
@@ -74,7 +89,11 @@ const [formData, setFormData] = useState({
         imagenes: listaImagenes 
     };
 
-    const response = await fetch('http://localhost:5000/api/propiedades', {
+// 1. Definimos la dirección inteligente
+    const URL_API = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
+    // 2. Usamos esa dirección con comillas invertidas
+    const response = await fetch(`${URL_API}/api/propiedades`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(propiedadAGuardar)
