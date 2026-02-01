@@ -34,4 +34,18 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// --- RUTA 4: Actualizar una propiedad (PUT) ---
+router.put('/:id', async (req, res) => {
+    try {
+        const propiedadActualizada = await Propiedad.findByIdAndUpdate(
+            req.params.id, // Buscamos por el ID que viene en la URL
+            req.body,      // Le metemos los datos nuevos
+            { new: true }  // Importante: Esto nos devuelve la versión ya cambiada
+        );
+        res.json(propiedadActualizada);
+    } catch (error) {
+        res.status(400).json({ mensaje: "Error al actualizar", error });
+    }
+});
+
 export default router;
