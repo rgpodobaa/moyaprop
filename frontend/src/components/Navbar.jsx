@@ -27,7 +27,7 @@ function Navbar({ esAdmin, setEsAdmin }) {
             <img src={logo} alt="Logo Moya" className="h-16 w-auto object-contain transition-transform group-hover:scale-105" />
             <div className="flex flex-col">
               <span className="text-2xl font-extrabold text-gray-800 tracking-wide leading-none">MOYA</span>
-              <span className="text-sm font-bold text-[#A0522D] tracking-widest leading-none">PROPIEDADES</span>
+              <span className="text-sm font-bold text-[#A0522D] tracking-widest leading-none">Propiedades</span>
             </div>
           </Link>
 
