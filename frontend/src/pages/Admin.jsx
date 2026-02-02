@@ -11,8 +11,12 @@ function Admin() {
     precio: '', 
     moneda: 'USD', 
     ubicacion: '', 
+    localidad: '',        // NUEVO CAMPO
     tipo: 'Casa', 
     operacion: 'Venta', 
+    superficieTotal: '',      // NUEVO CAMPO
+    superficieConstruida: '', // NUEVO CAMPO
+    antiguedad: '',           // NUEVO CAMPO
     descripcion: ''
   });
 
@@ -28,28 +32,37 @@ function Admin() {
 
   useEffect(() => { cargarPropiedades(); }, []);
 
-  // --- FUNCIÓN NUEVA: CARGAR DATOS EN EL FORMULARIO ---
+  // --- CARGAR DATOS EN EL FORMULARIO (Actualizado con nuevos campos) ---
   const cargarDatosParaEditar = (propiedad) => {
     setFormData({
       titulo: propiedad.titulo,
       precio: propiedad.precio,
       moneda: propiedad.moneda || 'USD',
       ubicacion: propiedad.ubicacion,
+      localidad: propiedad.localidad || '', // Carga localidad o vacío
       tipo: propiedad.tipo,
       operacion: propiedad.operacion,
+      superficieTotal: propiedad.superficieTotal || '',
+      superficieConstruida: propiedad.superficieConstruida || '',
+      antiguedad: propiedad.antiguedad || '',
       descripcion: propiedad.descripcion
     });
     setListaImagenes(propiedad.imagenes || []);
-    setIdEdicion(propiedad._id); // Guardamos el ID para saber cuál actualizar
+    setIdEdicion(propiedad._id); 
     
-    // Scroll suave hacia arriba para ver el formulario
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // --- FUNCIÓN NUEVA: CANCELAR EDICIÓN ---
+  // --- CANCELAR EDICIÓN (Resetea todos los campos) ---
   const cancelarEdicion = () => {
     setIdEdicion(null);
-    setFormData({ titulo: '', precio: '', moneda: 'USD', ubicacion: '', tipo: 'Casa', operacion: 'Venta', descripcion: '' });
+    setFormData({ 
+        titulo: '', precio: '', moneda: 'USD', 
+        ubicacion: '', localidad: '', 
+        tipo: 'Casa', operacion: 'Venta', 
+        superficieTotal: '', superficieConstruida: '', antiguedad: '',
+        descripcion: '' 
+    });
     setListaImagenes([]);
   };
 
@@ -85,7 +98,6 @@ function Admin() {
       await fetch(`${URL_API}/api/propiedades/${id}`, { method: 'DELETE' });
       cargarPropiedades();
       
-      // Si borramos la que estábamos editando, limpiamos el formulario
       if (id === idEdicion) cancelarEdicion();
     }
   };
@@ -106,32 +118,30 @@ function Admin() {
     const URL_API = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 
     try {
+        let response;
         if (idEdicion) {
             // --- MODO EDICIÓN (PUT) ---
-            const response = await fetch(`${URL_API}/api/propiedades/${idEdicion}`, {
+            response = await fetch(`${URL_API}/api/propiedades/${idEdicion}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(propiedadAGuardar)
             });
-
-            if (response.ok) {
-                alert("¡Propiedad actualizada con éxito!");
-                cancelarEdicion(); // Limpiamos y salimos del modo edición
-            }
         } else {
             // --- MODO CREACIÓN (POST) ---
-            const response = await fetch(`${URL_API}/api/propiedades`, {
+            response = await fetch(`${URL_API}/api/propiedades`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(propiedadAGuardar)
             });
-
-            if (response.ok) {
-                alert("¡Propiedad creada con éxito!");
-                cancelarEdicion(); // Limpiamos el formulario
-            }
         }
-        cargarPropiedades(); // Refrescamos la lista
+
+        if (response.ok) {
+            alert(idEdicion ? "¡Propiedad actualizada!" : "¡Propiedad creada!");
+            cancelarEdicion(); 
+            cargarPropiedades(); 
+        } else {
+            alert("Error al guardar");
+        }
 
     } catch (error) {
         console.error("Error al guardar:", error);
@@ -158,11 +168,12 @@ function Admin() {
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <input 
-            type="text" placeholder="Título" className="w-full p-2 border rounded"
+            type="text" placeholder="Título de la publicación" className="w-full p-2 border rounded"
             onChange={(e) => setFormData({...formData, titulo: e.target.value})}
             value={formData.titulo} required
           />
           
+          {/* FILA 1: PRECIO Y MONEDA */}
           <div className="flex gap-4">
             <select 
               className="w-1/6 p-2 border rounded bg-gray-50 font-bold text-gray-700"
@@ -179,13 +190,43 @@ function Admin() {
               value={formData.precio} required
             />
 
+            {/* ANTIGÜEDAD (NUEVO) */}
             <input 
-              type="text" placeholder="Ubicación" className="w-1/2 p-2 border rounded"
-              onChange={(e) => setFormData({...formData, ubicacion: e.target.value})}
-              value={formData.ubicacion} required
+              type="number" placeholder="Antigüedad (años)" className="w-1/2 p-2 border rounded"
+              onChange={(e) => setFormData({...formData, antiguedad: e.target.value})}
+              value={formData.antiguedad}
             />
           </div>
 
+          {/* FILA 2: UBICACIÓN Y LOCALIDAD (NUEVO) */}
+          <div className="flex gap-4">
+            <input 
+              type="text" placeholder="Dirección / Calle" className="w-1/2 p-2 border rounded"
+              onChange={(e) => setFormData({...formData, ubicacion: e.target.value})}
+              value={formData.ubicacion} required
+            />
+            <input 
+              type="text" placeholder="Localidad / Barrio" className="w-1/2 p-2 border rounded"
+              onChange={(e) => setFormData({...formData, localidad: e.target.value})}
+              value={formData.localidad} required
+            />
+          </div>
+
+          {/* FILA 3: SUPERFICIES (NUEVO) */}
+          <div className="flex gap-4">
+            <input 
+              type="number" placeholder="Sup. Total (m²)" className="w-1/2 p-2 border rounded"
+              onChange={(e) => setFormData({...formData, superficieTotal: e.target.value})}
+              value={formData.superficieTotal}
+            />
+            <input 
+              type="number" placeholder="Sup. Construida (m²)" className="w-1/2 p-2 border rounded"
+              onChange={(e) => setFormData({...formData, superficieConstruida: e.target.value})}
+              value={formData.superficieConstruida}
+            />
+          </div>
+
+          {/* FILA 4: TIPO (Con nuevas opciones) Y OPERACIÓN */}
           <div className="flex gap-4">
             <select className="w-1/2 p-2 border rounded" onChange={(e) => setFormData({...formData, tipo: e.target.value})} value={formData.tipo}>
               <option>Casa</option>
@@ -193,6 +234,8 @@ function Admin() {
               <option>Terreno</option>
               <option>PH</option>
               <option>Local</option>
+              <option>Barrio Cerrado</option> {/* NUEVO */}
+              <option>Depósito/Galpón</option> {/* NUEVO */}
             </select>
             <select className="w-1/2 p-2 border rounded" onChange={(e) => setFormData({...formData, operacion: e.target.value})} value={formData.operacion}>
               <option>Venta</option>
@@ -200,6 +243,7 @@ function Admin() {
             </select>
           </div>
 
+          {/* ZONA DE FOTOS */}
           <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg">
             <label className="block text-gray-700 font-bold mb-2">Galería de Fotos</label>
             <input 
@@ -241,6 +285,7 @@ function Admin() {
         </form>
       </div>
       
+      {/* LISTA DE GESTIÓN */}
       <div className="bg-white shadow-lg rounded-xl p-6 mt-10 border border-gray-100">
         <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Gestionar Inventario</h2>
         <div className="grid gap-4">
@@ -252,6 +297,8 @@ function Admin() {
                 )}
                 <div>
                     <p className="font-bold text-gray-800">{prop.titulo}</p>
+                    {/* AQUI MOSTRAMOS LA NUEVA LOCALIDAD */}
+                    <p className="text-sm text-gray-500">{prop.localidad} - {prop.ubicacion}</p>
                     <p className="text-sm text-[#A0522D] font-semibold">
                         {prop.operacion} - {prop.moneda === 'ARS' ? '$' : 'USD'} {prop.precio}
                     </p>
@@ -259,14 +306,12 @@ function Admin() {
               </div>
               
               <div className="flex gap-2">
-                {/* BOTÓN EDITAR */}
                 <button 
                     onClick={() => cargarDatosParaEditar(prop)} 
                     className="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg font-bold hover:bg-blue-600 hover:text-white transition"
                 >
                     Editar
                 </button>
-                {/* BOTÓN ELIMINAR */}
                 <button 
                     onClick={() => eliminarPropiedad(prop._id)} 
                     className="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-bold hover:bg-red-600 hover:text-white transition"

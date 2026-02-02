@@ -5,17 +5,24 @@ const propiedadSchema = new mongoose.Schema({
     descripcion: String,
     precio: Number,
     
-    // --- NUEVO CAMPO SOLICITADO POR EL CLIENTE ---
     moneda: { 
         type: String, 
-        default: 'USD', // Si no especifican, será Dólares
-        enum: ['USD', 'ARS'] // Solo permitimos estos dos valores
+        default: 'USD',
+        enum: ['USD', 'ARS']
     },
-    // ---------------------------------------------
 
-    tipo: String, // Casa, Departamento, etc.
-    operacion: String, // Venta o Alquiler
-    ubicacion: String,
+    tipo: String, 
+    operacion: String,
+    
+    // --- CAMBIOS DE UBICACIÓN ---
+    ubicacion: String,  // Esto será la Dirección exacta (Calle y altura)
+    localidad: String,  // NUEVO: Barrio o Ciudad (Ej: José Mármol)
+
+    // --- NUEVOS CAMPOS DE DETALLE ---
+    superficieTotal: Number,      // en m2
+    superficieConstruida: Number, // en m2
+    antiguedad: Number,           // en años
+    
     imagenes: [String]
 });
 

@@ -37,14 +37,20 @@ function CardPropiedad({ propiedad }) {
         </div>
         
         <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2">{propiedad.titulo}</h3>
-        <p className="text-gray-500 text-sm mb-4 flex-grow">{propiedad.ubicacion}</p>
+        
+        {/* --- CAMBIO SIMPLE: UBICACIÓN Y LOCALIDAD --- */}
+        <div className="mb-4 flex-grow">
+            <p className="text-gray-500 text-sm">{propiedad.ubicacion}</p>
+            {propiedad.localidad && (
+                <p className="text-gray-500 text-sm">{propiedad.localidad}</p>
+            )}
+        </div>
+        {/* ------------------------------------------- */}
         
         <div className="mt-auto pt-4 border-t border-gray-100">
-          {/* --- AQUÍ ESTÁ EL CAMBIO --- */}
           <p className="text-2xl font-black text-gray-900 mb-4">
-             {propiedad.moneda === 'ARS' ? '$' : 'U$S'} {propiedad.precio.toLocaleString('es-AR')}
+              {propiedad.moneda === 'ARS' ? '$' : 'U$S'} {propiedad.precio.toLocaleString('es-AR')}
           </p>
-          {/* --------------------------- */}
           
           <Link 
             to={`/propiedad/${propiedad._id}`}
