@@ -9,10 +9,7 @@ function Detalle() {
   const [indiceActual, setIndiceActual] = useState(0);
 
   useEffect(() => {
-    // 1. Definimos la dirección inteligente
     const URL_API = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-
-    // 2. Usamos la variable con comillas invertidas
     fetch(`${URL_API}/api/propiedades`)
       .then(res => res.json())
       .then(data => {
@@ -25,7 +22,6 @@ function Detalle() {
 
   const imagenes = propiedad.imagenes || [];
 
-  // Funciones para las flechas
   const siguienteImagen = () => {
     setIndiceActual((prev) => (prev === imagenes.length - 1 ? 0 : prev + 1));
   };
@@ -38,15 +34,33 @@ function Detalle() {
   const direccionMapa = `${propiedad.ubicacion}, ${propiedad.localidad || ''}`;
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-8">
+    <div className="max-w-6xl mx-auto p-4 md:p-8 print:max-w-full print:p-0">
+      
+      {/* --- ENCABEZADO SOLO PARA IMPRESIÓN --- */}
+      <div className="hidden print:flex justify-between items-center mb-8 border-b-2 border-gray-800 pb-4">
+          <div>
+              <h1 className="text-3xl font-black text-black tracking-tighter">
+                  MOYA<span className="text-gray-600"> Propiedades</span>
+              </h1>
+              <p className="text-sm font-bold text-gray-600 mt-1">C.M.C.P.L.Z Col. 4238</p>
+              <p className="text-xs text-gray-500 italic">"Construyendo confianza en la gestión"</p>
+          </div>
+          <div className="text-right text-sm text-gray-800 font-medium">
+              <p>www.moyaprop.com.ar</p>
+              <p>📞 11-3863-3987</p>
+              <p>Burzaco, Buenos Aires</p>
+          </div>
+      </div>
+
       <Link to="/" className="text-[#A0522D] mb-6 inline-block print:hidden font-semibold hover:underline">
         ← Volver al listado
       </Link>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-4 print:block print:mt-0">
 
-        {/* --- COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES --- */}
-        <div className="relative h-[400px] bg-gray-200 rounded-3xl overflow-hidden shadow-lg group">
+        {/* FOTO PRINCIPAL */}
+        {/* MODIFICACIÓN: print:w-3/5 (60% ancho) y print:mx-auto (centrado) */}
+        <div className="relative h-[400px] print:h-64 print:w-3/5 print:mx-auto bg-gray-200 rounded-3xl overflow-hidden shadow-lg group print:shadow-none print:rounded-lg print:mb-6 print:border print:border-gray-300">
           {imagenes.length > 0 ? (
             <div className="relative w-full h-full">
               {imagenes.map((img, index) => (
@@ -73,33 +87,28 @@ function Detalle() {
           )}
         </div>
 
-        {/* --- COLUMNA DERECHA: INFORMACIÓN --- */}
-        <div className="space-y-6">
+        {/* INFORMACIÓN */}
+        <div className="space-y-6 print:space-y-2">
           
-          {/* Etiquetas Superiores */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 print:hidden">
             <span className="bg-[#FF8C00] text-white px-3 py-1 rounded-full text-sm font-bold uppercase">{propiedad.operacion}</span>
             <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-bold uppercase">{propiedad.tipo}</span>
           </div>
 
-          {/* Título y Ubicación */}
           <div>
-            <h1 className="text-4xl font-extrabold text-gray-900 leading-tight">{propiedad.titulo}</h1>
-            <p className="text-xl text-gray-500 mt-2">
-                {/* Muestra "Localidad - Dirección" o solo Dirección si no hay localidad */}
+            <h1 className="text-4xl print:text-2xl font-extrabold text-gray-900 leading-tight">{propiedad.titulo}</h1>
+            <p className="text-xl print:text-sm text-gray-500 mt-2">
                 {propiedad.localidad && <span className="font-semibold text-gray-700">{propiedad.localidad} - </span>} 
                 {propiedad.ubicacion}
             </p>
           </div>
 
-          {/* Precio */}
-          <p className="text-4xl font-black text-[#FF8C00]">
+          <p className="text-4xl print:text-xl font-black text-[#FF8C00] print:text-black">
             {propiedad.moneda === 'ARS' ? '$' : 'USD'} {propiedad.precio.toLocaleString('es-AR')}
           </p>
 
-          {/* --- NUEVO: FICHA TÉCNICA (Grid de detalles) --- */}
-          <div className="grid grid-cols-2 gap-4 bg-orange-50 p-4 rounded-xl border border-orange-100">
-             {/* Renderizamos solo si el dato existe */}
+          {/* FICHA TÉCNICA */}
+          <div className="grid grid-cols-2 gap-4 bg-orange-50 p-4 rounded-xl border border-orange-100 print:bg-white print:border-gray-300 print:p-2 print:gap-2 print:text-sm">
              {propiedad.superficieTotal && (
                  <div>
                     <p className="text-xs text-gray-500 uppercase font-bold">Sup. Total</p>
@@ -126,7 +135,6 @@ function Detalle() {
              )}
           </div>
 
-          {/* Botón Imprimir */}
           <button
             onClick={() => window.print()}
             className="text-gray-600 hover:text-black font-semibold flex items-center gap-2 print:hidden text-sm"
@@ -134,13 +142,13 @@ function Detalle() {
             🖨️ Imprimir Ficha
           </button>
 
-          {/* Descripción */}
-          <div className="border-t border-b py-6 text-gray-700 leading-relaxed whitespace-pre-line">
+          {/* DESCRIPCIÓN */}
+          <div className="border-t border-b py-6 text-gray-700 leading-relaxed whitespace-pre-line print:text-sm print:leading-snug print:py-2 print:text-justify">
             <h3 className="font-bold text-lg mb-2 text-gray-900">Descripción</h3>
             {propiedad.descripcion || "Sin descripción."}
           </div>
 
-          {/* Mapa Corregido */}
+          {/* MAPA */}
           <div className="mt-6 mb-6 print:hidden">
             <h3 className="font-bold text-lg mb-3 text-gray-900">Ubicación Aproximada</h3>
             <div className="w-full h-64 bg-gray-200 rounded-xl overflow-hidden shadow-lg border border-gray-300">
@@ -150,7 +158,7 @@ function Detalle() {
                   height="100%"
                   frameBorder="0"
                   style={{ border: 0 }}
-                  // Usamos la URL estándar de Google Maps Embed
+                  // URL CORREGIDA
                   src={`https://maps.google.com/maps?q=${encodeURIComponent(direccionMapa)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                   allowFullScreen
                 ></iframe>
