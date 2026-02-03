@@ -18,6 +18,16 @@ function Detalle() {
       });
   }, [id]);
 
+  // --- CAMBIAR EL TÍTULO DE LA PESTAÑA DINÁMICAMENTE ---
+  useEffect(() => {
+    if (propiedad) {
+        document.title = `${propiedad.titulo} | Moya Propiedades`;
+    }
+    return () => {
+        document.title = 'Moya Propiedades';
+    };
+  }, [propiedad]);
+
   if (!propiedad) return <div className="text-center mt-20 font-bold">Cargando...</div>;
 
   const imagenes = propiedad.imagenes || [];
@@ -59,7 +69,6 @@ function Detalle() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-4 print:block print:mt-0">
 
         {/* FOTO PRINCIPAL */}
-        {/* MODIFICACIÓN: print:w-3/5 (60% ancho) y print:mx-auto (centrado) */}
         <div className="relative h-[400px] print:h-64 print:w-3/5 print:mx-auto bg-gray-200 rounded-3xl overflow-hidden shadow-lg group print:shadow-none print:rounded-lg print:mb-6 print:border print:border-gray-300">
           {imagenes.length > 0 ? (
             <div className="relative w-full h-full">
@@ -142,13 +151,18 @@ function Detalle() {
             🖨️ Imprimir Ficha
           </button>
 
-          {/* DESCRIPCIÓN */}
+          {/* DESCRIPCIÓN + LEYENDA LEGAL */}
           <div className="border-t border-b py-6 text-gray-700 leading-relaxed whitespace-pre-line print:text-sm print:leading-snug print:py-2 print:text-justify">
             <h3 className="font-bold text-lg mb-2 text-gray-900">Descripción</h3>
             {propiedad.descripcion || "Sin descripción."}
+
+            {/* LEYENDA LEGAL */}
+            <p className="mt-6 text-xs text-gray-400 italic print:mt-4 print:text-[10px] leading-tight">
+                Las imágenes publicadas no son necesariamente vinculantes ni tampoco contractuales. Las medidas enunciadas son aproximadas y han sido dadas al sólo hecho orientativo, las exactas surgirán del respectivo título, plano y/o plancheta catastral.
+            </p>
           </div>
 
-          {/* MAPA */}
+          {/* MAPA CORREGIDO */}
           <div className="mt-6 mb-6 print:hidden">
             <h3 className="font-bold text-lg mb-3 text-gray-900">Ubicación Aproximada</h3>
             <div className="w-full h-64 bg-gray-200 rounded-xl overflow-hidden shadow-lg border border-gray-300">
@@ -158,7 +172,7 @@ function Detalle() {
                   height="100%"
                   frameBorder="0"
                   style={{ border: 0 }}
-                  // URL CORREGIDA
+                  // URL OFICIAL Y ESTÁNDAR DE GOOGLE MAPS
                   src={`https://maps.google.com/maps?q=${encodeURIComponent(direccionMapa)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                   allowFullScreen
                 ></iframe>
