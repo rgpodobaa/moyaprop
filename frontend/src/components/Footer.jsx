@@ -45,9 +45,9 @@ function Footer() {
           <h3 className="text-white font-bold text-lg mb-4 border-b border-gray-700 pb-2 inline-block">Navegación</h3>
           <ul className="space-y-2">
             <li><Link to="/" className="hover:text-[#FF8C00] transition">Inicio</Link></li>
+            <li><Link to="/" className="hover:text-[#FF8C00] transition">Propiedades</Link></li>
             <li><Link to="/nosotros" className="hover:text-[#FF8C00] transition">Nosotros</Link></li>
             <li><Link to="/contacto" className="hover:text-[#FF8C00] transition">Contacto</Link></li>
-            <li><Link to="/admin" className="hover:text-[#FF8C00] transition">Acceder</Link></li>
           </ul>
         </div>
 
